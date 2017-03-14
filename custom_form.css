@@ -1,0 +1,144 @@
+/**
+ * custom_form css file
+ */
+
+@font-face {
+    font-family: "Helvetica Neue";
+    src: url(fonts/HelveticaNeueCyr-Thin.otf);
+}
+
+html * {
+    font-family: "Helvetica Neue" !important;
+}
+
+html *:hover,
+html *:focus,
+html *:active,
+html *:focus:hover {
+    outline: none;
+}
+
+::-webkit-input-placeholder {color:#ffffff;}
+::-moz-placeholder          {color:#ffffff;}
+:-moz-placeholder           {color:#ffffff;}
+:-ms-input-placeholder      {color:#ffffff;}
+
+h1 {
+    color: #115794;
+    text-align: center;
+}
+
+.custom-form {
+    position:relative;
+    margin: 0px auto;
+    width: 465px;
+    height:auto !important;
+    height:100%;
+    min-height:100%;
+}
+
+.custom-form select {
+    color: #ffffff;
+}
+
+.custom-form select option:nth-child(odd),
+.custom-form select option:nth-child(even) {
+    color: black;
+}
+
+.custom-form > div {
+    padding: 47px 55px 30px 55px;
+    background-color: #64b8df;
+    border-radius: 5px;
+}
+
+.custom-form label {
+    display: none;
+}
+
+.custom-form > div {
+    margin:0 auto;
+}
+
+.custom-form .form-item {
+    margin-bottom: 0px;
+    margin-top: 13px;
+}
+
+.custom-form input.form-text,
+.custom-form select.form-select {
+    font-size: 17px;
+    width: calc(100% - 12px);
+    border: none;
+    border-bottom: 1px solid #fff;
+    padding: 0px 0px 6px 12px;
+    background-color: transparent;
+}
+
+.custom-form select.form-select {
+    padding-left: 9px;
+    width: 100%;
+}
+
+.domain .form-item input,
+.domain .form-item div {
+    display: inline-block;
+}
+
+.domain .form-item input {
+    width: 200px;
+}
+
+.domain .form-item div {
+    vertical-align: bottom;
+    line-height: 15px;
+    font-size: 18px;
+    margin-left: 8px;
+}
+
+.trial {
+    font-size: 28px;
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 25px;
+}
+
+.domain .description {
+    color: #ffffff;
+}
+
+.custom-form input.form-submit {
+    font-size: 22px;
+    width: 100%;
+    margin: 27px auto 58px auto;
+    padding: 15px;
+    display: block;
+    background: #f27b30;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s ease;
+}
+
+.custom-form input.form-submit:hover,
+.custom-form input.form-submit:focus,
+.custom-form input.form-submit:active {
+    background-color: #c56224;
+}
+
+.custom-form .form-item-phone-code,
+.custom-form .form-item-phone-code input,
+.custom-form .form-item-phone,
+.custom-form .form-item-phone input {
+    display: inline-block;
+}
+
+.custom-form .form-item-phone-code input {
+    width: 60px;
+}
+
+.custom-form .form-item-phone input {
+    width: 252px;
+    margin-left: 15px;
+}

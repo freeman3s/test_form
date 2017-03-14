@@ -1,0 +1,6 @@
+name = Custom form
+description = Provides simple form.
+package = Custom modules
+core = 7.x
+stylesheets[all][] = custom_form.css
+files[] = custom_form.install

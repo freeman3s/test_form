@@ -1,0 +1,172 @@
+<?php
+
+/**
+ * @file
+ * custom_form module file.
+ */
+
+include_once DRUPAL_ROOT . '/includes/locale.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function custom_form_menu() {
+	$items['custom_form'] = array(
+		'title' => 'Terrasoft',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('custom_form_form'),
+		'access arguments' => array('access content'),
+	);
+
+	return $items;
+}
+
+/**
+ * The custom form.
+ */
+function custom_form_form() {
+	$form['#attributes'] = array('class' => 'custom-form');
+	$form['intro'] = array(
+		'#markup' => t('Register for a 14-day Free Trial'),
+		'#prefix' => '<div class="trial">',
+		'#suffix' => '</div>',
+	);
+	$form['domain'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Domain'),
+		'#required' => TRUE,
+		'#attributes' => array(
+			'placeholder' => t('Domain*'),
+		),
+		'#description' => t('.bpmonline.com'),
+		'#prefix' => '<div class="domain">',
+		'#suffix' => '</div>',
+	);
+	$form['login'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Login'),
+		'#required' => TRUE,
+		'#attributes' => array(
+			'placeholder' => t('Login*'),
+		),
+	);
+	$countries = country_get_list();
+	$form['country'] = array(
+		'#type' => 'select',
+		'#title' => t('Country'),
+		'#required' => TRUE,
+		'#empty_option' => 'Country*',
+		'#default_value' => variable_get('site_default_country', ''),
+		'#options' => $countries,
+	);
+	$form['city'] = array(
+		'#type' => 'textfield',
+		'#title' => t('City'),
+		'#attributes' => array(
+			'placeholder' => t('City'),
+		),
+	);
+	$form['phone_code'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Code'),
+		'#required' => TRUE,
+		'#attributes' => array(
+			'placeholder' => t('Code*'),
+		),
+		'#maxlength' => 4,
+	);
+	$form['phone'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Phone'),
+		'#required' => TRUE,
+		'#attributes' => array(
+			'placeholder' => t('Phone*'),
+		),
+		'#maxlength' => 9,
+	);
+	$form['email'] = array(
+		'#type' => 'textfield',
+		'#title' => t('E-mail address'),
+		'#required' => TRUE,
+		'#attributes' => array(
+			'placeholder' => t('Email*'),
+		),
+	);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Register'),
+	);
+
+	return $form;
+}
+
+/**
+ * Form validation logic for the custom form.
+ */
+function custom_form_form_validate($form, &$form_state) {
+	if (preg_match('/^(test1|test2|test3)$/', $form_state['values']['domain'])) {
+		form_set_error('domain', t('Domain already in use.'));
+	}
+	if (!preg_match('/^\+[0-9]{3}$/', $form_state['values']['phone_code'])) {
+		form_set_error('phone_code', t('Phone code may contain only "+" and three digits.'));
+	}
+	if (!preg_match('/^[0-9]{9}$/', $form_state['values']['phone'])) {
+		form_set_error('phone', t('Phone number may contain only nine digits.'));
+	}
+	if (!valid_email_address($form_state['values']['email'])) {
+		form_set_error('email', t('That e-mail address is not valid.'));
+	}
+}
+
+/**
+ * Implements hook_mail().
+ */
+function custom_form_mail($key, &$message, $params) {
+	if ($key == 'message') {
+		$options = array(
+			'langcode' => $message['language']->language,
+		);
+		$message['subject'] = 'New information from custom form';
+		$message['body'][] = t("@name sent you the following information:\n", array('@name' => $params['email']), $options);
+		$message['body'][] = check_plain('Domain - ' . $params['domain']);
+		$message['body'][] = check_plain('Login - ' . $params['login']);
+		$message['body'][] = check_plain('Country - ' . $params['country']);
+		$message['body'][] = check_plain('City - ' . $params['city']);
+		$message['body'][] = check_plain('Phone - ' . $params['phone_code'] . $params['phone']);
+	}
+}
+
+/**
+ * Form submission logic for the custom form.
+ */
+function custom_form_form_submit($form, &$form_state) {
+	db_insert('custom_form_data')
+		->fields(array(
+			'domain' => $form_state['values']['domain'],
+			'login' => $form_state['values']['login'],
+			'country' => $form_state['values']['country'],
+			'city' => $form_state['values']['city'],
+			'phone' => $form_state['values']['phone_code'] . $form_state['values']['phone'],
+			'email' => $form_state['values']['email'],
+		))
+		->execute();
+
+	$module = 'custom_form';
+	$key = 'message';
+
+	$from = $form_state['values']['email'];
+	$to = variable_get('site_mail', 'admin@example.com');
+
+	$params = $form_state['values'];
+
+	$language = language_default();
+
+	$send = TRUE;
+	$result = drupal_mail($module, $key, $to, $language, $params, $from, $send);
+	if ($result['result'] == TRUE) {
+		drupal_set_message(t('Your message has been sent.'));
+	}
+	else {
+		drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+	}
+}

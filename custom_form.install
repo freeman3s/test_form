@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * Implementation of hook_schema().
+ */
+function custom_form_schema() {
+	$schema['custom_form_data'] = array(
+		'fields' => array(
+			'id' => array(
+				'description' => 'The primary identifier.',
+				'type' => 'serial',
+				'unsigned' => TRUE,
+				'not null' => TRUE),
+			'domain' => array(
+				'description' => 'The domain.',
+				'type' => 'varchar',
+				'length' => 255,
+				'not null' => TRUE,
+				'default' => ''),
+			'login' => array(
+				'description' => 'The login.',
+				'type' => 'varchar',
+				'length' => 255,
+				'not null' => TRUE,
+				'default' => ''),
+			'country' => array(
+				'description' => 'The country of user.',
+				'type' => 'varchar',
+				'length' => 255,
+				'not null' => TRUE,
+				'default' => ''),
+			'city' => array(
+				'description' => 'The city of user.',
+				'type' => 'varchar',
+				'length' => 255,
+				'not null' => TRUE,
+				'default' => ''),
+			'phone' => array(
+				'description' => 'The phone of user.',
+				'type' => 'varchar',
+				'length' => 255,
+				'not null' => TRUE,
+				'default' => ''),
+			'email' => array(
+				'description' => 'The email of user.',
+				'type' => 'varchar',
+				'length' => 255,
+				'not null' => TRUE,
+				'default' => ''),
+		),
+		'primary key' => array('id'),
+	);
+
+return $schema;
+}
